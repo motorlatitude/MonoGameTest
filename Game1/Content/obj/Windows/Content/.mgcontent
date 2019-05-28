@@ -4,8 +4,6 @@
   <Platform>Windows</Platform>
   <Config />
   <SourceFiles>
-    <File>E:/Developer/Game/Game1/Game1/Content/ball.png</File>
-    <File>E:/Developer/Game/Game1/Game1/Content/cor_land.png</File>
     <File>E:/Developer/Game/Game1/Game1/Content/land.png</File>
     <File>E:/Developer/Game/Game1/Game1/Content/land_border_bottom.png</File>
     <File>E:/Developer/Game/Game1/Game1/Content/land_border_bottom_left.png</File>
@@ -22,6 +20,10 @@
     <File>E:/Developer/Game/Game1/Game1/Content/land_border_top_right_bottom.png</File>
     <File>E:/Developer/Game/Game1/Game1/Content/land_border_top_right_bottom_left.png</File>
     <File>E:/Developer/Game/Game1/Game1/Content/land_border_top_right_left.png</File>
+    <File>E:/Developer/Game/Game1/Game1/Content/land_dirt.png</File>
+    <File>E:/Developer/Game/Game1/Game1/Content/land_flowers.png</File>
+    <File>E:/Developer/Game/Game1/Game1/Content/land_flowers_2.png</File>
+    <File>E:/Developer/Game/Game1/Game1/Content/land_gravel.png</File>
     <File>E:/Developer/Game/Game1/Game1/Content/ocean.png</File>
     <File>E:/Developer/Game/Game1/Game1/Content/ocean_border.png</File>
     <File>E:/Developer/Game/Game1/Game1/Content/ocean_border_left.png</File>
@@ -29,6 +31,8 @@
     <File>E:/Developer/Game/Game1/Game1/Content/ocean_border_right_left.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

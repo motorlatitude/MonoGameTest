@@ -44,3 +44,7 @@ E:\Developer\Game\Game1\Game1\bin\Windows\x86\Debug\Content\ocean_border.xnb
 E:\Developer\Game\Game1\Game1\bin\Windows\x86\Debug\Content\ocean_border_left.xnb
 E:\Developer\Game\Game1\Game1\bin\Windows\x86\Debug\Content\ocean_border_right.xnb
 E:\Developer\Game\Game1\Game1\bin\Windows\x86\Debug\Content\ocean_border_right_left.xnb
+E:\Developer\Game\Game1\Game1\bin\Windows\x86\Debug\Content\land_flowers.xnb
+E:\Developer\Game\Game1\Game1\bin\Windows\x86\Debug\Content\land_flowers_2.xnb
+E:\Developer\Game\Game1\Game1\bin\Windows\x86\Debug\Content\land_gravel.xnb
+E:\Developer\Game\Game1\Game1\bin\Windows\x86\Debug\Content\land_dirt.xnb

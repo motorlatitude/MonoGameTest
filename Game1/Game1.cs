@@ -10,10 +10,8 @@ namespace Game1
     /// </summary>
     public class Game1 : Game
     {
-        Texture2D ballTexture;
         Texture2D oceanTexture;
         Texture2D landTexture;
-        Texture2D corLandTexture;
 
         //Land Border Textures
         Texture2D landBorderTopTexture;
@@ -41,30 +39,55 @@ namespace Game1
         Texture2D oceanBorderRightLeftTexture;
         Texture2D oceanBorderTexture;
 
+        Texture2D landFlowerTexture;
+        Texture2D landFlowerTwoTexture;
+        Texture2D landGravelTexture;
+        Texture2D landDirtTexture;
+
         MapTile[][] mapTiles = new MapTile[10][];
+        MapTilesExtras[] extraMapTiles = new MapTilesExtras[10];
 
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        int tileSize = 84;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
-            graphics.PreferredBackBufferWidth = 1280;
-            graphics.PreferredBackBufferHeight = 1280;
+            graphics.PreferredBackBufferWidth = 1200;
+            graphics.PreferredBackBufferHeight = 1200;
             Content.RootDirectory = "Content";
+
+            Window.AllowUserResizing = true;
+            Window.ClientSizeChanged += OnResize;
+        }
+
+        public void OnResize(Object sender, EventArgs e)
+        {
+            // Additional code to execute when the user drags the window
+            // or in the case you programmatically change the screen or windows client screen size.
+            // code that might directly change the backbuffer width height calling apply changes.
+            // or passing changes that must occur in other classes or even calling there OnResize methods
+            // though those methods can simply be added to the Windows event caller
+
         }
 
         public void GenerateIsland()
         {
+            int islandSize = 12;
             int i = 0;
+            int k = 0;
             int totalOceanTiles = 0;
+            mapTiles = new MapTile[islandSize][];
+            extraMapTiles = new MapTilesExtras[islandSize];
             Random rnd = new Random();
-            for (int x = 0; x < 10; x++)
+            for (int x = 0; x < islandSize; x++)
             {
-                mapTiles[x] = new MapTile[10];
-                for(int y = 0; y < 10; y++)
+                mapTiles[x] = new MapTile[islandSize];
+                for(int y = 0; y < islandSize; y++)
                 {
-                    if(x==0 || y == 0 || x == 9 || y == 9)
+                    if(x==0 || y == 0 || x == (islandSize - 1) || y == (islandSize - 1))
                     {
                         //nothing but the sweet ocean
                         mapTiles[x][y] = new MapTile(x, y, "ocean");
@@ -80,6 +103,27 @@ namespace Game1
                         else
                         {
                             mapTiles[x][y] = new MapTile(x, y, "land");
+                            int r_extras = rnd.Next(100); // gen int lower than 100
+                            if (r_extras < 3 && k < 5)
+                            {
+                                extraMapTiles[k] = new MapTilesExtras(x, y, landFlowerTexture);
+                                k++;
+                            }
+                            else if (r_extras < 7 && k < 5)
+                            {
+                                extraMapTiles[k] = new MapTilesExtras(x, y, landFlowerTwoTexture);
+                                k++;
+                            }
+                            else if (r_extras < 9 && k < 5)
+                            {
+                                extraMapTiles[k] = new MapTilesExtras(x, y, landGravelTexture);
+                                k++;
+                            }
+                            else if (r_extras < 12 && k < 5)
+                            {
+                                extraMapTiles[k] = new MapTilesExtras(x, y, landDirtTexture);
+                                k++;
+                            }
                         }
                     }
                     i++;
@@ -99,7 +143,7 @@ namespace Game1
                             //left hand border
                             tile.border_left = true;
                         }
-                        if (tile.x < 9 && mapTiles[tile.x + 1][tile.y].type == "ocean")
+                        if (tile.x < (islandSize - 1) && mapTiles[tile.x + 1][tile.y].type == "ocean")
                         {
                             //right hand border
                             tile.border_right = true;
@@ -109,7 +153,7 @@ namespace Game1
                             //top hand border
                             tile.border_top = true;
                         }
-                        if (tile.y < 9 && mapTiles[tile.x][tile.y + 1].type == "ocean")
+                        if (tile.y < (islandSize - 1) && mapTiles[tile.x][tile.y + 1].type == "ocean")
                         {
                             //bottom hand border
                             tile.border_bottom = true;
@@ -126,7 +170,7 @@ namespace Game1
                                 tile.ocean_border_left = true;
 
                             }
-                            if (tile.x < 9 && mapTiles[tile.x + 1][tile.y - 1].type == "ocean")
+                            if (tile.x < (islandSize - 1) && mapTiles[tile.x + 1][tile.y - 1].type == "ocean")
                             {
                                 tile.ocean_border_right = true;
 
@@ -135,6 +179,8 @@ namespace Game1
                     }
                 }
             }
+
+            //add flowers
 
 
         }
@@ -162,10 +208,9 @@ namespace Game1
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            ballTexture = Content.Load<Texture2D>("ball");
             oceanTexture = Content.Load<Texture2D>("ocean");
             landTexture = Content.Load<Texture2D>("land");
-            corLandTexture = Content.Load<Texture2D>("cor_land");
+
 
             landBorderTopTexture = Content.Load<Texture2D>("land_border_top");
             landBorderRightTexture = Content.Load<Texture2D>("land_border_right");
@@ -191,6 +236,11 @@ namespace Game1
             oceanBorderRightTexture = Content.Load<Texture2D>("ocean_border_right");
             oceanBorderRightLeftTexture = Content.Load<Texture2D>("ocean_border_right_left");
             oceanBorderTexture = Content.Load<Texture2D>("ocean_border");
+
+            landFlowerTexture = Content.Load<Texture2D>("land_flowers");
+            landFlowerTwoTexture = Content.Load<Texture2D>("land_flowers_2");
+            landGravelTexture = Content.Load<Texture2D>("land_gravel");
+            landDirtTexture = Content.Load<Texture2D>("land_dirt");
         }
 
         /// <summary>
@@ -250,96 +300,103 @@ namespace Game1
                             {
                                 if (tile.border_top && tile.border_right && tile.border_bottom && tile.border_left)
                                 {
-                                    spriteBatch.Draw(landBorderTopRightBottomLeftTexture, new Rectangle(tile.x * 128, tile.y * 128, 128, 128), Color.White);
+                                    spriteBatch.Draw(landBorderTopRightBottomLeftTexture, new Rectangle(tile.x * tileSize, tile.y * tileSize, tileSize, tileSize), Color.White);
                                 }
                                 else if (tile.border_top && tile.border_right && tile.border_bottom)
                                 {
-                                    spriteBatch.Draw(landBorderTopRightBottomTexture, new Rectangle(tile.x * 128, tile.y * 128, 128, 128), Color.White);
+                                    spriteBatch.Draw(landBorderTopRightBottomTexture, new Rectangle(tile.x * tileSize, tile.y * tileSize, tileSize, tileSize), Color.White);
                                 }
                                 else if (tile.border_right && tile.border_bottom && tile.border_left)
                                 {
-                                    spriteBatch.Draw(landBorderRightBottomLeftTexture, new Rectangle(tile.x * 128, tile.y * 128, 128, 128), Color.White);
+                                    spriteBatch.Draw(landBorderRightBottomLeftTexture, new Rectangle(tile.x * tileSize, tile.y * tileSize, tileSize, tileSize), Color.White);
                                 }
                                 else if (tile.border_top && tile.border_bottom && tile.border_left)
                                 {
-                                    spriteBatch.Draw(landBorderTopBottomLeftTexture, new Rectangle(tile.x * 128, tile.y * 128, 128, 128), Color.White);
+                                    spriteBatch.Draw(landBorderTopBottomLeftTexture, new Rectangle(tile.x * tileSize, tile.y * tileSize, tileSize, tileSize), Color.White);
                                 }
                                 else if (tile.border_top && tile.border_right && tile.border_left)
                                 {
-                                    spriteBatch.Draw(landBorderTopRightLeftTexture, new Rectangle(tile.x * 128, tile.y * 128, 128, 128), Color.White);
+                                    spriteBatch.Draw(landBorderTopRightLeftTexture, new Rectangle(tile.x * tileSize, tile.y * tileSize, tileSize, tileSize), Color.White);
                                 }
                                 else if (tile.border_top && tile.border_right)
                                 {
-                                    spriteBatch.Draw(landBorderTopRightTexture, new Rectangle(tile.x * 128, tile.y * 128, 128, 128), Color.White);
+                                    spriteBatch.Draw(landBorderTopRightTexture, new Rectangle(tile.x * tileSize, tile.y * tileSize, tileSize, tileSize), Color.White);
                                 }
                                 else if (tile.border_right && tile.border_bottom)
                                 {
-                                    spriteBatch.Draw(landBorderRightBottomTexture, new Rectangle(tile.x * 128, tile.y * 128, 128, 128), Color.White);
+                                    spriteBatch.Draw(landBorderRightBottomTexture, new Rectangle(tile.x * tileSize, tile.y * tileSize, tileSize, tileSize), Color.White);
                                 }
                                 else if (tile.border_bottom && tile.border_left)
                                 {
-                                    spriteBatch.Draw(landBorderBottomLeftTexture, new Rectangle(tile.x * 128, tile.y * 128, 128, 128), Color.White);
+                                    spriteBatch.Draw(landBorderBottomLeftTexture, new Rectangle(tile.x * tileSize, tile.y * tileSize, tileSize, tileSize), Color.White);
                                 }
                                 else if (tile.border_left && tile.border_top)
                                 {
-                                    spriteBatch.Draw(landBorderTopLeftTexture, new Rectangle(tile.x * 128, tile.y * 128, 128, 128), Color.White);
+                                    spriteBatch.Draw(landBorderTopLeftTexture, new Rectangle(tile.x * tileSize, tile.y * tileSize, tileSize, tileSize), Color.White);
                                 }
                                 else if (tile.border_left && tile.border_right)
                                 {
-                                    spriteBatch.Draw(landBorderRightLeftTexture, new Rectangle(tile.x * 128, tile.y * 128, 128, 128), Color.White);
+                                    spriteBatch.Draw(landBorderRightLeftTexture, new Rectangle(tile.x * tileSize, tile.y * tileSize, tileSize, tileSize), Color.White);
                                 }
                                 else if (tile.border_top && tile.border_bottom)
                                 {
-                                    spriteBatch.Draw(landBorderTopBottomTexture, new Rectangle(tile.x * 128, tile.y * 128, 128, 128), Color.White);
+                                    spriteBatch.Draw(landBorderTopBottomTexture, new Rectangle(tile.x * tileSize, tile.y * tileSize, tileSize, tileSize), Color.White);
                                 }
                                 else if(tile.border_bottom)
                                 {
-                                    spriteBatch.Draw(landBorderBottomTexture, new Rectangle(tile.x * 128, tile.y * 128, 128, 128), Color.White);
+                                    spriteBatch.Draw(landBorderBottomTexture, new Rectangle(tile.x * tileSize, tile.y * tileSize, tileSize, tileSize), Color.White);
                                 }
                                 else if (tile.border_top)
                                 {
-                                    spriteBatch.Draw(landBorderTopTexture, new Rectangle(tile.x * 128, tile.y * 128, 128, 128), Color.White);
+                                    spriteBatch.Draw(landBorderTopTexture, new Rectangle(tile.x * tileSize, tile.y * tileSize, tileSize, tileSize), Color.White);
                                 }
                                 else if (tile.border_right)
                                 {
-                                    spriteBatch.Draw(landBorderRightTexture, new Rectangle(tile.x * 128, tile.y * 128, 128, 128), Color.White);
+                                    spriteBatch.Draw(landBorderRightTexture, new Rectangle(tile.x * tileSize, tile.y * tileSize, tileSize, tileSize), Color.White);
                                 }
                                 else if (tile.border_left)
                                 {
-                                    spriteBatch.Draw(landBorderLeftTexture, new Rectangle(tile.x * 128, tile.y * 128, 128, 128), Color.White);
+                                    spriteBatch.Draw(landBorderLeftTexture, new Rectangle(tile.x * tileSize, tile.y * tileSize, tileSize, tileSize), Color.White);
                                 }
                                 else
                                 {
-                                    spriteBatch.Draw(landTexture, new Rectangle(tile.x * 128, tile.y * 128, 128, 128), Color.White);
+                                    spriteBatch.Draw(landTexture, new Rectangle(tile.x * tileSize, tile.y * tileSize, tileSize, tileSize), Color.White);
                                 }
                             }
                             else if (tile.type == "ocean")
                             {
                                 if(tile.ocean_border_left && tile.ocean_border_right && tile.ocean_border)
                                 {
-                                    spriteBatch.Draw(oceanBorderRightLeftTexture, new Rectangle(tile.x * 128, tile.y * 128, 128, 128), Color.White);
+                                    spriteBatch.Draw(oceanBorderRightLeftTexture, new Rectangle(tile.x * tileSize, tile.y * tileSize, tileSize, tileSize), Color.White);
                                 }
                                 else if (tile.ocean_border_left && tile.ocean_border)
                                 {
-                                    spriteBatch.Draw(oceanBorderLeftTexture, new Rectangle(tile.x * 128, tile.y * 128, 128, 128), Color.White);
+                                    spriteBatch.Draw(oceanBorderLeftTexture, new Rectangle(tile.x * tileSize, tile.y * tileSize, tileSize, tileSize), Color.White);
                                 }
                                 else if (tile.ocean_border_right && tile.ocean_border)
                                 {
-                                    spriteBatch.Draw(oceanBorderRightTexture, new Rectangle(tile.x * 128, tile.y * 128, 128, 128), Color.White);
+                                    spriteBatch.Draw(oceanBorderRightTexture, new Rectangle(tile.x * tileSize, tile.y * tileSize, tileSize, tileSize), Color.White);
                                 }
                                 else if (tile.ocean_border)
                                 {
-                                    spriteBatch.Draw(oceanBorderTexture, new Rectangle(tile.x * 128, tile.y * 128, 128, 128), Color.White);
+                                    spriteBatch.Draw(oceanBorderTexture, new Rectangle(tile.x * tileSize, tile.y * tileSize, tileSize, tileSize), Color.White);
                                 }
                                 else
                                 {
-                                    spriteBatch.Draw(oceanTexture, new Rectangle(tile.x * 128, tile.y * 128, 128, 128), Color.White);
+                                    spriteBatch.Draw(oceanTexture, new Rectangle(tile.x * tileSize, tile.y * tileSize, tileSize, tileSize), Color.White);
                                 }
                             }
                         }
                         y++;
                     }
                     x++;
+                }
+                foreach (MapTilesExtras extra_tile in extraMapTiles)
+                {
+                    if(extra_tile != null)
+                    {
+                        spriteBatch.Draw(extra_tile.texture, new Rectangle(extra_tile.x * tileSize, extra_tile.y * tileSize, tileSize, tileSize), Color.White);
+                    }
                 }
                 spriteBatch.End();
             }

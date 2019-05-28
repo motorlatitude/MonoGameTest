@@ -15,11 +15,13 @@ namespace Game1
         public bool ocean_border_right;
         public bool ocean_border;
 
+
         public MapTile(int x_pos, int y_pos, string tile_type)
         {
             x = x_pos;
             y = y_pos;
             type = tile_type;
         }
+        
     }
 }
