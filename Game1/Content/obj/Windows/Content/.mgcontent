@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SourceFileCollection xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Profile>Reach</Profile>
+  <Platform>Windows</Platform>
+  <Config />
+  <SourceFiles>
+    <File>E:/Developer/Game/Game1/Game1/Content/ball.png</File>
+    <File>E:/Developer/Game/Game1/Game1/Content/cor_land.png</File>
+    <File>E:/Developer/Game/Game1/Game1/Content/land.png</File>
+    <File>E:/Developer/Game/Game1/Game1/Content/land_border_bottom.png</File>
+    <File>E:/Developer/Game/Game1/Game1/Content/land_border_bottom_left.png</File>
+    <File>E:/Developer/Game/Game1/Game1/Content/land_border_left.png</File>
+    <File>E:/Developer/Game/Game1/Game1/Content/land_border_right.png</File>
+    <File>E:/Developer/Game/Game1/Game1/Content/land_border_right_bottom.png</File>
+    <File>E:/Developer/Game/Game1/Game1/Content/land_border_right_bottom_left.png</File>
+    <File>E:/Developer/Game/Game1/Game1/Content/land_border_right_left.png</File>
+    <File>E:/Developer/Game/Game1/Game1/Content/land_border_top.png</File>
+    <File>E:/Developer/Game/Game1/Game1/Content/land_border_top_bottom.png</File>
+    <File>E:/Developer/Game/Game1/Game1/Content/land_border_top_bottom_left.png</File>
+    <File>E:/Developer/Game/Game1/Game1/Content/land_border_top_left.png</File>
+    <File>E:/Developer/Game/Game1/Game1/Content/land_border_top_right.png</File>
+    <File>E:/Developer/Game/Game1/Game1/Content/land_border_top_right_bottom.png</File>
+    <File>E:/Developer/Game/Game1/Game1/Content/land_border_top_right_bottom_left.png</File>
+    <File>E:/Developer/Game/Game1/Game1/Content/land_border_top_right_left.png</File>
+    <File>E:/Developer/Game/Game1/Game1/Content/ocean.png</File>
+    <File>E:/Developer/Game/Game1/Game1/Content/ocean_border.png</File>
+    <File>E:/Developer/Game/Game1/Game1/Content/ocean_border_left.png</File>
+    <File>E:/Developer/Game/Game1/Game1/Content/ocean_border_right.png</File>
+    <File>E:/Developer/Game/Game1/Game1/Content/ocean_border_right_left.png</File>
+  </SourceFiles>
+  <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+  </DestFiles>
+</SourceFileCollection>
