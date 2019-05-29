@@ -15,6 +15,7 @@ namespace Game1
         public bool ocean_border_right;
         public bool ocean_border;
 
+        public Texture2D texture;
 
         public MapTile(int x_pos, int y_pos, string tile_type)
         {

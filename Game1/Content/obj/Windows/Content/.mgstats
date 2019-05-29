@@ -24,4 +24,4 @@ Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Siz
 "E:/Developer/Game/Game1/Game1/Content/ocean_border_left.png","E:/Developer/Game/Game1/Game1/Content/bin/Windows/Content/ocean_border_left.xnb","TextureProcessor","Texture2DContent",1413,262229,0.0099735
 "E:/Developer/Game/Game1/Game1/Content/ocean_border_right.png","E:/Developer/Game/Game1/Game1/Content/bin/Windows/Content/ocean_border_right.xnb","TextureProcessor","Texture2DContent",1429,262229,0.0079793
 "E:/Developer/Game/Game1/Game1/Content/ocean_border_right_left.png","E:/Developer/Game/Game1/Game1/Content/bin/Windows/Content/ocean_border_right_left.xnb","TextureProcessor","Texture2DContent",1422,262229,0.0069812
-"E:/Developer/Game/Game1/Game1/Content/player.png","E:/Developer/Game/Game1/Game1/Content/bin/Windows/Content/player.xnb","TextureProcessor","Texture2DContent",26338,655445,0.1695463
+"E:/Developer/Game/Game1/Game1/Content/player.png","E:/Developer/Game/Game1/Game1/Content/bin/Windows/Content/player.xnb","TextureProcessor","Texture2DContent",28772,655445,0.1660636

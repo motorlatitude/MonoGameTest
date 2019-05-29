@@ -43,8 +43,9 @@
   <ItemGroup>
     <Compile Include="Character.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="Island.cs" />
     <Compile Include="MapTile.cs" />
-    <Compile Include="MapTilesExtras.cs" />
+    <Compile Include="MapTileDetails.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
