@@ -50,7 +50,13 @@ namespace Game1
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        int tileSize = 84;
+        Character player;
+        Texture2D playerTexture;
+        float playerPositionX = 600f;
+        float playerPositionY = 600f;
+        float playerSpeed = 80f;
+
+        int tileSize = 82;
 
         public Game1()
         {
@@ -73,9 +79,18 @@ namespace Game1
 
         }
 
+        public void GeneratePlayer()
+        {
+            player = new Character();
+            int frames = 5;
+            player.create(0, 0, 8, frames);
+            for (int i = 0; i < frames; i++)
+                player.addFrame(i, new Rectangle(i * 128, 0, 128, 256));
+        }
+
         public void GenerateIsland()
         {
-            int islandSize = 12;
+            int islandSize = 13;
             int i = 0;
             int k = 0;
             int totalOceanTiles = 0;
@@ -95,7 +110,7 @@ namespace Game1
                     else
                     {
                         int r = rnd.Next(100); // gen int lower than 100
-                        if(r < 25 && totalOceanTiles < 15) //avoid having too few land tiles, limit max number of ocean tiles within the 9x9 to 25
+                        if(r < 15 && totalOceanTiles < 15) //avoid having too few land tiles, limit max number of ocean tiles within the 9x9 to 25
                         {
                             mapTiles[x][y] = new MapTile(x, y, "ocean");
                             totalOceanTiles++;
@@ -241,6 +256,8 @@ namespace Game1
             landFlowerTwoTexture = Content.Load<Texture2D>("land_flowers_2");
             landGravelTexture = Content.Load<Texture2D>("land_gravel");
             landDirtTexture = Content.Load<Texture2D>("land_dirt");
+
+            playerTexture = Content.Load<Texture2D>("player");
         }
 
         /// <summary>
@@ -265,12 +282,116 @@ namespace Game1
             if(gameTime.ElapsedGameTime.TotalSeconds == 0)
             {
                 GenerateIsland();
-            }
+                GeneratePlayer();
 
-            // TODO: Add your update logic here
-            var kstate = Keyboard.GetState();
-            if (kstate.IsKeyDown(Keys.A))
-                GenerateIsland();
+            }
+            else
+            {
+                player.animationFrameUpdate(gameTime);
+                var kstate = Keyboard.GetState();
+                if (kstate.IsKeyDown(Keys.Q))
+                    GenerateIsland();
+
+                //org player pos
+                int org_min_ppx = (int)Math.Floor((playerPositionX - 15) / tileSize); // left
+                int org_min_ppy = (int)Math.Floor((playerPositionY) / tileSize); // top
+                int org_max_ppx = (int)Math.Floor((playerPositionX + 15) / tileSize); // right
+                int org_max_ppy = (int)Math.Floor((playerPositionY + 40) / tileSize); // bottom
+                float org_playerPositionX = playerPositionX;
+                float org_playerPositionY = playerPositionY;
+
+                if (kstate.IsKeyDown(Keys.W))
+                    playerPositionY -= playerSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (kstate.IsKeyDown(Keys.S))
+                    playerPositionY += playerSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (kstate.IsKeyDown(Keys.A))
+                    playerPositionX -= playerSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (kstate.IsKeyDown(Keys.D))
+                    playerPositionX += playerSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                //Player Collision Detection
+                int min_ppx = (int)Math.Floor((playerPositionX - 15) / tileSize); // left
+                int min_ppy = (int)Math.Floor((playerPositionY) / tileSize); // top
+                int max_ppx = (int)Math.Floor((playerPositionX + 15) / tileSize); // right
+                int max_ppy = (int)Math.Floor((playerPositionY + 40) / tileSize); // bottom
+                if (min_ppx != org_min_ppx || min_ppy != org_min_ppy || max_ppx != org_max_ppx || max_ppy != org_max_ppy)
+                {
+                    if(min_ppx < mapTiles.Length && min_ppx > -1 && max_ppx < mapTiles.Length && max_ppx > -1)
+                    {
+                        if (max_ppy < mapTiles[max_ppx].Length && max_ppy < mapTiles[min_ppx].Length && min_ppy < mapTiles[max_ppx].Length && min_ppy < mapTiles[min_ppx].Length && min_ppy > -1)
+                        {
+                            if (mapTiles[min_ppx][min_ppy].type != "land")
+                            {
+                                if (mapTiles[org_min_ppx][min_ppy].type == "land")
+                                {
+                                    playerPositionX = org_playerPositionX;
+                                }
+                                else if (mapTiles[min_ppx][org_min_ppy].type == "land")
+                                {
+                                    playerPositionY = org_playerPositionY;
+                                }
+                                else
+                                {
+                                    playerPositionX = org_playerPositionX;
+                                    playerPositionY = org_playerPositionY;
+
+                                }
+                            }
+                            if (mapTiles[max_ppx][min_ppy].type != "land")
+                            {
+                                if (mapTiles[org_max_ppx][min_ppy].type == "land")
+                                {
+                                    playerPositionX = org_playerPositionX;
+                                }
+                                else if (mapTiles[max_ppx][org_min_ppy].type == "land")
+                                {
+                                    playerPositionY = org_playerPositionY;
+                                }
+                                else
+                                {
+                                    playerPositionX = org_playerPositionX;
+                                    playerPositionY = org_playerPositionY;
+
+                                }
+                            }
+                            if (mapTiles[min_ppx][max_ppy].type != "land")
+                            {
+                                if (mapTiles[org_min_ppx][max_ppy].type == "land")
+                                {
+                                    playerPositionX = org_playerPositionX;
+                                }
+                                else if (mapTiles[min_ppx][org_max_ppy].type == "land")
+                                {
+                                    playerPositionY = org_playerPositionY;
+                                }
+                                else
+                                {
+                                    playerPositionX = org_playerPositionX;
+                                    playerPositionY = org_playerPositionY;
+
+                                }
+                            }
+                            if (mapTiles[max_ppx][max_ppy].type != "land")
+                            {
+                                if (mapTiles[org_max_ppx][max_ppy].type == "land")
+                                {
+                                    playerPositionX = org_playerPositionX;
+                                }
+                                else if (mapTiles[max_ppx][org_max_ppy].type == "land")
+                                {
+                                    playerPositionY = org_playerPositionY;
+                                }
+                                else
+                                {
+                                    playerPositionX = org_playerPositionX;
+                                    playerPositionY = org_playerPositionY;
+
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 
 
             base.Update(gameTime);
@@ -287,7 +408,7 @@ namespace Game1
             // TODO: Add your drawing code here
             if(mapTiles.Length > 0)
             {
-                spriteBatch.Begin();
+                spriteBatch.Begin(SpriteSortMode.Texture, null, null, null, null, null, Matrix.CreateTranslation(0, 0, 0)); //move viewport / camera
                 int x = 0;
                 int y = 0;
                 foreach (MapTile[] tilesX in mapTiles)
@@ -398,6 +519,9 @@ namespace Game1
                         spriteBatch.Draw(extra_tile.texture, new Rectangle(extra_tile.x * tileSize, extra_tile.y * tileSize, tileSize, tileSize), Color.White);
                     }
                 }
+
+                spriteBatch.Draw(playerTexture, new Rectangle((int)playerPositionX - 20,(int)playerPositionY - 40, 40, 80), player.getDrawFrame(), Color.White);
+
                 spriteBatch.End();
             }
             
