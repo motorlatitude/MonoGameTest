@@ -9,19 +9,31 @@ namespace Game1
     {
         private int IslandSize;
         private ContentManager cm;
+        private CollisionObjects CollisionManager;
+
+        public int IslandOriginX;
+        public int IslandOriginY;
 
         public MapTile[][] tiles;
         public MapTileDetails[] TileDetails;
 
-        public Island(ContentManager mainContentManager)
+        public Island(ContentManager mainContentManager, CollisionObjects mainCollisionManager)
         {
             IslandSize = 13;
+
+            // (0, 0) island origin for main island
+            IslandOriginX = 0;
+            IslandOriginY = 0;
+
             cm = mainContentManager;
+            CollisionManager = mainCollisionManager;
         }
 
-        public void GenerateIsland(int island_size)
+        public void GenerateIsland(int island_size, int origin_x, int origin_y, int TileSize)
         {
             IslandSize = island_size;
+            IslandOriginX = origin_x;
+            IslandOriginY = origin_y;
             tiles = new MapTile[IslandSize][];
             TileDetails = new MapTileDetails[10];
             Random random = new Random();
@@ -35,6 +47,7 @@ namespace Game1
                     if (y == 0 || x == 0 || y == IslandSize - 1 || x == IslandSize - 1 || r < 12)
                     {
                         tiles[x][y] = new MapTile(x, y, "ocean"); //generate a border of ocean tiles around the island and a few ocean tiles spotted in the island
+                        CollisionManager.AddCollisionObject(new CollisionObject(x * TileSize, y * TileSize, TileSize, TileSize));
                     }
                     else
                     {

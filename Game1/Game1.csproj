@@ -42,6 +42,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Character.cs" />
+    <Compile Include="CollisionObject.cs" />
+    <Compile Include="CollisionObjects.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Island.cs" />
     <Compile Include="MapTile.cs" />

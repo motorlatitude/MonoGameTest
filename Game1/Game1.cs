@@ -10,6 +10,8 @@ namespace Game1
     /// </summary>
     public class Game1 : Game
     {
+
+        CollisionObjects CollisionManager;
         Island[] islands;
 
         GraphicsDeviceManager graphics;
@@ -65,7 +67,7 @@ namespace Game1
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            CollisionManager = new CollisionObjects();
             base.Initialize();
         }
 
@@ -100,12 +102,15 @@ namespace Game1
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            if(gameTime.ElapsedGameTime.TotalSeconds == 0)
+            if (gameTime.ElapsedGameTime.TotalSeconds == 0)
             {
-                islands = new Island[1];
-                Island main_island = new Island(Content);
-                main_island.GenerateIsland(13);
+                islands = new Island[2];
+                Island main_island = new Island(Content, CollisionManager);
+                main_island.GenerateIsland(13, 0, 0, tileSize);
                 islands[0] = main_island;
+                Island second_island = new Island(Content, CollisionManager);
+                second_island.GenerateIsland(13, 13, 0, tileSize);
+                islands[1] = second_island;
                 GeneratePlayer();
 
             }
@@ -116,14 +121,11 @@ namespace Game1
                 var kstate = Keyboard.GetState();
                 if (kstate.IsKeyDown(Keys.Q))
                 {
-                    main_island.GenerateIsland(13);
+                    main_island.GenerateIsland(13, 0, 0, tileSize);
                 }
 
                 //org player pos
-                int org_min_ppx = (int)Math.Floor((playerPositionX - 15) / tileSize); // left
-                int org_min_ppy = (int)Math.Floor((playerPositionY) / tileSize); // top
-                int org_max_ppx = (int)Math.Floor((playerPositionX + 15) / tileSize); // right
-                int org_max_ppy = (int)Math.Floor((playerPositionY + 40) / tileSize); // bottom
+
                 float org_playerPositionX = playerPositionX;
                 float org_playerPositionY = playerPositionY;
                 float org_CameraPositionX = CameraOriginX;
@@ -150,105 +152,14 @@ namespace Game1
                     CameraOriginX -= playerSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
                 }
 
-                MapTile[][] mapTiles = main_island.tiles;
+                bool collision = CollisionManager.CheckIfCollidingWithObject((int)playerPositionX + 10, (int)playerPositionY + 40, 20, 40);
 
-                //Player Collision Detection
-                int min_ppx = (int)Math.Floor((playerPositionX - 15) / tileSize); // left
-                int min_ppy = (int)Math.Floor((playerPositionY) / tileSize); // top
-                int max_ppx = (int)Math.Floor((playerPositionX + 15) / tileSize); // right
-                int max_ppy = (int)Math.Floor((playerPositionY + 40) / tileSize); // bottom
-                if (min_ppx != org_min_ppx || min_ppy != org_min_ppy || max_ppx != org_max_ppx || max_ppy != org_max_ppy)
+                if (collision)
                 {
-                    if(min_ppx < mapTiles.Length && min_ppx > -1 && max_ppx < mapTiles.Length && max_ppx > -1)
-                    {
-                        if (max_ppy < mapTiles[max_ppx].Length && max_ppy < mapTiles[min_ppx].Length && min_ppy < mapTiles[max_ppx].Length && min_ppy < mapTiles[min_ppx].Length && min_ppy > -1)
-                        {
-                            if (mapTiles[min_ppx][min_ppy].type != "land")
-                            {
-                                if (mapTiles[org_min_ppx][min_ppy].type == "land")
-                                {
-                                    playerPositionX = org_playerPositionX;
-                                    CameraOriginX = org_CameraPositionX;
-                                }
-                                else if (mapTiles[min_ppx][org_min_ppy].type == "land")
-                                {
-                                    playerPositionY = org_playerPositionY;
-                                    CameraOriginY = org_CameraPositionY;
-                                }
-                                else
-                                {
-                                    playerPositionX = org_playerPositionX;
-                                    playerPositionY = org_playerPositionY;
-                                    CameraOriginX = org_CameraPositionX;
-                                    CameraOriginY = org_CameraPositionY;
-
-                                }
-                            }
-                            if (mapTiles[max_ppx][min_ppy].type != "land")
-                            {
-                                if (mapTiles[org_max_ppx][min_ppy].type == "land")
-                                {
-                                    playerPositionX = org_playerPositionX;
-                                    CameraOriginX = org_CameraPositionX;
-                                }
-                                else if (mapTiles[max_ppx][org_min_ppy].type == "land")
-                                {
-                                    playerPositionY = org_playerPositionY;
-                                    CameraOriginY = org_CameraPositionY;
-                                }
-                                else
-                                {
-                                    playerPositionX = org_playerPositionX;
-                                    playerPositionY = org_playerPositionY;
-                                    CameraOriginX = org_CameraPositionX;
-                                    CameraOriginY = org_CameraPositionY;
-
-                                }
-                            }
-                            if (mapTiles[min_ppx][max_ppy].type != "land")
-                            {
-                                if (mapTiles[org_min_ppx][max_ppy].type == "land")
-                                {
-                                    playerPositionX = org_playerPositionX;
-                                    CameraOriginX = org_CameraPositionX;
-                                }
-                                else if (mapTiles[min_ppx][org_max_ppy].type == "land")
-                                {
-                                    playerPositionY = org_playerPositionY;
-                                    CameraOriginY = org_CameraPositionY;
-                                }
-                                else
-                                {
-                                    playerPositionX = org_playerPositionX;
-                                    playerPositionY = org_playerPositionY;
-                                    CameraOriginX = org_CameraPositionX;
-                                    CameraOriginY = org_CameraPositionY;
-
-                                }
-                            }
-                            if (mapTiles[max_ppx][max_ppy].type != "land")
-                            {
-                                if (mapTiles[org_max_ppx][max_ppy].type == "land")
-                                {
-                                    playerPositionX = org_playerPositionX;
-                                    CameraOriginX = org_CameraPositionX;
-                                }
-                                else if (mapTiles[max_ppx][org_max_ppy].type == "land")
-                                {
-                                    playerPositionY = org_playerPositionY;
-                                    CameraOriginY = org_CameraPositionY;
-                                }
-                                else
-                                {
-                                    playerPositionX = org_playerPositionX;
-                                    playerPositionY = org_playerPositionY;
-                                    CameraOriginX = org_CameraPositionX;
-                                    CameraOriginY = org_CameraPositionY;
-
-                                }
-                            }
-                        }
-                    }
+                    playerPositionX = org_playerPositionX;
+                    CameraOriginX = org_CameraPositionX;
+                    playerPositionY = org_playerPositionY;
+                    CameraOriginY = org_CameraPositionY;
                 }
             }
 
@@ -269,29 +180,32 @@ namespace Game1
             if (main_island.tiles.Length > 0)
             {
                 spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Matrix.CreateTranslation((int)CameraOriginX - 600, (int)CameraOriginY - 600, 0)); //move viewport / camera
-                int x = 0;
-                int y = 0;
-                foreach (MapTile[] tilesX in main_island.tiles)
+                foreach(Island island in islands)
                 {
-                    foreach (MapTile tile in tilesX)
+                    int x = 0;
+                    int y = 0;
+                    foreach (MapTile[] tilesX in island.tiles)
                     {
-                        if (tile != null && tile.texture != null)
+                        foreach (MapTile tile in tilesX)
                         {
-                            spriteBatch.Draw(tile.texture, new Rectangle(tile.x * tileSize, tile.y * tileSize, tileSize, tileSize), Color.White);
+                            if (tile != null && tile.texture != null)
+                            {
+                                spriteBatch.Draw(tile.texture, new Rectangle(tile.x * tileSize + island.IslandOriginX * tileSize, tile.y * tileSize + island.IslandOriginY * tileSize, tileSize, tileSize), Color.White);
+                            }
+                            y++;
                         }
-                        y++;
+                        x++;
                     }
-                    x++;
-                }
-                foreach (MapTileDetails tile_details in main_island.TileDetails)
-                {
-                    if(tile_details != null && tile_details.texture != null)
+                    foreach (MapTileDetails tile_details in island.TileDetails)
                     {
-                        spriteBatch.Draw(tile_details.texture, new Rectangle(tile_details.x * tileSize, tile_details.y * tileSize, tileSize, tileSize), Color.White);
+                        if (tile_details != null && tile_details.texture != null)
+                        {
+                            spriteBatch.Draw(tile_details.texture, new Rectangle(tile_details.x * tileSize + island.IslandOriginX * tileSize, tile_details.y * tileSize + island.IslandOriginY * tileSize, tileSize, tileSize), Color.White);
+                        }
                     }
                 }
 
-                spriteBatch.Draw(playerTexture, new Rectangle((int)playerPositionX - 20,(int)playerPositionY - 40, 40, 80), player.getDrawFrame(), Color.White);
+                spriteBatch.Draw(playerTexture, new Rectangle((int)playerPositionX,(int)playerPositionY, 40, 80), player.getDrawFrame(), Color.White);
 
                 spriteBatch.End();
             }
