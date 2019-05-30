@@ -49,3 +49,5 @@ E:\Developer\Game\Game1\Game1\bin\Windows\x86\Debug\Content\land_flowers_2.xnb
 E:\Developer\Game\Game1\Game1\bin\Windows\x86\Debug\Content\land_gravel.xnb
 E:\Developer\Game\Game1\Game1\bin\Windows\x86\Debug\Content\land_dirt.xnb
 E:\Developer\Game\Game1\Game1\bin\Windows\x86\Debug\Content\player.xnb
+E:\Developer\Game\Game1\Game1\bin\Windows\x86\Debug\Content\iron_ore.xnb
+E:\Developer\Game\Game1\Game1\bin\Windows\x86\Debug\Content\tree.xnb

@@ -1,4 +1,5 @@
 Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
+"E:/Developer/Game/Game1/Game1/Content/iron_ore.png","E:/Developer/Game/Game1/Game1/Content/bin/Windows/Content/iron_ore.xnb","TextureProcessor","Texture2DContent",5131,262229,0.1326454
 "E:/Developer/Game/Game1/Game1/Content/land.png","E:/Developer/Game/Game1/Game1/Content/bin/Windows/Content/land.xnb","TextureProcessor","Texture2DContent",858,262229,0.1156903
 "E:/Developer/Game/Game1/Game1/Content/land_border_bottom.png","E:/Developer/Game/Game1/Game1/Content/bin/Windows/Content/land_border_bottom.xnb","TextureProcessor","Texture2DContent",1067,262229,0.0119681
 "E:/Developer/Game/Game1/Game1/Content/land_border_bottom_left.png","E:/Developer/Game/Game1/Game1/Content/bin/Windows/Content/land_border_bottom_left.xnb","TextureProcessor","Texture2DContent",995,262229,0.1027256
@@ -25,3 +26,4 @@ Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Siz
 "E:/Developer/Game/Game1/Game1/Content/ocean_border_right.png","E:/Developer/Game/Game1/Game1/Content/bin/Windows/Content/ocean_border_right.xnb","TextureProcessor","Texture2DContent",1429,262229,0.0079793
 "E:/Developer/Game/Game1/Game1/Content/ocean_border_right_left.png","E:/Developer/Game/Game1/Game1/Content/bin/Windows/Content/ocean_border_right_left.xnb","TextureProcessor","Texture2DContent",1422,262229,0.0069812
 "E:/Developer/Game/Game1/Game1/Content/player.png","E:/Developer/Game/Game1/Game1/Content/bin/Windows/Content/player.xnb","TextureProcessor","Texture2DContent",28772,655445,0.1660636
+"E:/Developer/Game/Game1/Game1/Content/tree.png","E:/Developer/Game/Game1/Game1/Content/bin/Windows/Content/tree.xnb","TextureProcessor","Texture2DContent",8877,524373,0.10622

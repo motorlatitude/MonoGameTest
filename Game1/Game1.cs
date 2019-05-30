@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Game1
 {
@@ -27,6 +29,8 @@ namespace Game1
         float playerSpeed = 80f;
 
         int tileSize = 82;
+
+        bool drawCollisions = false;
 
         public Game1()
         {
@@ -97,6 +101,10 @@ namespace Game1
         /// checking for collisions, gathering input, and playing audio.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        /// 
+
+        public double elapsedTime = 0;
+
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -106,10 +114,12 @@ namespace Game1
             {
                 islands = new Island[2];
                 Island main_island = new Island(Content, CollisionManager);
-                main_island.GenerateIsland(13, 0, 0, tileSize);
+                main_island.GenerateIsland(13, 0, 0, tileSize, "main");
+                main_island.GenerateNewResource();
+                main_island.GenerateNewResource();
                 islands[0] = main_island;
                 Island second_island = new Island(Content, CollisionManager);
-                second_island.GenerateIsland(13, 13, 0, tileSize);
+                second_island.GenerateIsland(13, 13, 0, tileSize, "right");
                 islands[1] = second_island;
                 GeneratePlayer();
 
@@ -118,14 +128,24 @@ namespace Game1
             {
                 player.animationFrameUpdate(gameTime);
                 Island main_island = islands[0];
-                var kstate = Keyboard.GetState();
-                if (kstate.IsKeyDown(Keys.Q))
+                if((gameTime.TotalGameTime.TotalSeconds - elapsedTime) > 2)
                 {
-                    main_island.GenerateIsland(13, 0, 0, tileSize);
+                    main_island.GenerateNewResource(); //generate new resource every 30 seconds
+                    elapsedTime = gameTime.TotalGameTime.TotalSeconds;
+                }
+                var kstate = Keyboard.GetState();
+                if (kstate.IsKeyDown(Keys.F5))
+                {
+                    CollisionManager.RemoveCollisionObjectsInGroup("main"); //make sure to generate new collision map for this island and get rid of the old one
+                    main_island.GenerateIsland(13, 0, 0, tileSize, "main");
+                }
+
+                if (kstate.IsKeyDown(Keys.F1))
+                {
+                    drawCollisions = drawCollisions ? false : true;
                 }
 
                 //org player pos
-
                 float org_playerPositionX = playerPositionX;
                 float org_playerPositionY = playerPositionY;
                 float org_CameraPositionX = CameraOriginX;
@@ -152,10 +172,11 @@ namespace Game1
                     CameraOriginX -= playerSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
                 }
 
-                bool collision = CollisionManager.CheckIfCollidingWithObject((int)playerPositionX + 10, (int)playerPositionY + 40, 20, 40);
+                bool collision = CollisionManager.CheckIfCollidingWithObject((int)playerPositionX + 10, (int)playerPositionY + 60, 20, 20);
 
                 if (collision)
                 {
+                    //dont move
                     playerPositionX = org_playerPositionX;
                     CameraOriginX = org_CameraPositionX;
                     playerPositionY = org_playerPositionY;
@@ -176,6 +197,7 @@ namespace Game1
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
+            List<Sprite> Sprites = new List<Sprite>();
             Island main_island = islands[0];
             if (main_island.tiles.Length > 0)
             {
@@ -203,9 +225,43 @@ namespace Game1
                             spriteBatch.Draw(tile_details.texture, new Rectangle(tile_details.x * tileSize + island.IslandOriginX * tileSize, tile_details.y * tileSize + island.IslandOriginY * tileSize, tileSize, tileSize), Color.White);
                         }
                     }
+                    foreach (IslandResource res in island.IslandResources)
+                    {
+                        if (res != null && res.texture != null)
+                        {
+                            Sprites.Add(new Sprite(res.texture, new Rectangle(res.x * tileSize + island.IslandOriginX * tileSize, res.y * tileSize + island.IslandOriginY * tileSize + (tileSize - res.height), res.width, res.height), Color.White));
+                        }
+                    }
+                }
+                Sprites.Add(new Sprite(playerTexture, new Rectangle((int)playerPositionX, (int)playerPositionY, 40, 80), Color.White, player.getDrawFrame()));
+
+                Sprites.Sort((obj, obj2) => obj.destinationRectangle.Y.CompareTo((obj2.destinationRectangle.Y + obj2.destinationRectangle.Height))); //bugs out here for some reason, make sure all sprites have destination rect assigned
+
+                foreach (Sprite sp in Sprites)
+                {
+                    if (sp.sourceRectangle != null)
+                    {
+                        spriteBatch.Draw(sp.texture, sp.destinationRectangle, sp.sourceRectangle, sp.color);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(sp.texture, sp.destinationRectangle, sp.color);
+                    }
                 }
 
-                spriteBatch.Draw(playerTexture, new Rectangle((int)playerPositionX,(int)playerPositionY, 40, 80), player.getDrawFrame(), Color.White);
+                //Draw collision areas
+                if (drawCollisions)
+                {
+                    Texture2D rect = new Texture2D(graphics.GraphicsDevice, 1, 1);
+                    Color[] data = new Color[1];
+                    data[0] = Color.Chocolate;
+                    rect.SetData(data);
+
+                    foreach (CollisionObject obj in CollisionManager.Objects)
+                    {
+                        spriteBatch.Draw(rect, new Rectangle((int)obj.x, (int)obj.y, obj.width, obj.height), Color.Red * 0.5f);
+                    }
+                }
 
                 spriteBatch.End();
             }

@@ -21,6 +21,16 @@ namespace Game1
             Objects.Add(obj);
         }
 
+        public void RemoveCollisionObject(CollisionObject obj)
+        {
+            Objects.Remove(obj);
+        }
+
+        public void RemoveCollisionObjectsInGroup(string group_name)
+        {
+            Objects.RemoveAll(obj => obj.group == group_name);
+        }
+
         public bool CheckIfCollidingWithObject(int object_x, int object_y, int object_width, int object_height)
         {
             bool isColliding = false;

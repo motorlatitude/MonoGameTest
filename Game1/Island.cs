@@ -2,20 +2,26 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 
 namespace Game1
 {
     class Island
     {
         private int IslandSize;
+        private int TileSize;
+        private string IslandID;
         private ContentManager cm;
         private CollisionObjects CollisionManager;
+        private Random rng;
 
         public int IslandOriginX;
         public int IslandOriginY;
 
         public MapTile[][] tiles;
         public MapTileDetails[] TileDetails;
+
+        public List<IslandResource> IslandResources;
 
         public Island(ContentManager mainContentManager, CollisionObjects mainCollisionManager)
         {
@@ -29,14 +35,18 @@ namespace Game1
             CollisionManager = mainCollisionManager;
         }
 
-        public void GenerateIsland(int island_size, int origin_x, int origin_y, int TileSize)
+        public void GenerateIsland(int island_size, int origin_x, int origin_y, int island_TileSize, string island_name)
         {
             IslandSize = island_size;
+            IslandID = island_name;
+            TileSize = island_TileSize;
             IslandOriginX = origin_x;
             IslandOriginY = origin_y;
             tiles = new MapTile[IslandSize][];
             TileDetails = new MapTileDetails[10];
-            Random random = new Random();
+            IslandResources = new List<IslandResource>();
+            rng = new Random();
+            Random random = rng;
             int TileDetailsIndex = 0;
             for (int x = 0; x < IslandSize; x++)
             {
@@ -47,7 +57,7 @@ namespace Game1
                     if (y == 0 || x == 0 || y == IslandSize - 1 || x == IslandSize - 1 || r < 12)
                     {
                         tiles[x][y] = new MapTile(x, y, "ocean"); //generate a border of ocean tiles around the island and a few ocean tiles spotted in the island
-                        CollisionManager.AddCollisionObject(new CollisionObject(x * TileSize, y * TileSize, TileSize, TileSize));
+                        CollisionManager.AddCollisionObject(new CollisionObject(IslandOriginX * TileSize + x * TileSize, IslandOriginY * TileSize + y * TileSize, TileSize, TileSize, "island_tile", IslandID)); //make ocean tiles collideable (player can't move over those)
                     }
                     else
                     {
@@ -76,6 +86,27 @@ namespace Game1
                 }
             }
             SetTileTextures();
+        }
+
+        public void GenerateNewResource()
+        {
+            
+            int r_x = rng.Next(IslandSize);
+            int r_y = rng.Next(IslandSize);
+            int r_type = rng.Next(2); //types * 10; types = tree, iron_ore
+            if(tiles[r_x][r_y].type == "land")
+            {
+                if(r_type == 0)
+                {
+                    IslandResources.Add(new IslandResource(r_x, r_y, TileSize, TileSize, "iron_ore", cm.Load<Texture2D>("iron_ore")));
+                    CollisionManager.AddCollisionObject(new CollisionObject(IslandOriginX * TileSize + r_x * TileSize, IslandOriginY * TileSize + r_y * TileSize, TileSize, TileSize, "island_tile_resource", IslandID));
+                }
+                else if(r_type == 1)
+                {
+                    IslandResources.Add(new IslandResource(r_x, r_y, TileSize, TileSize*2, "tree", cm.Load<Texture2D>("tree")));
+                    CollisionManager.AddCollisionObject(new CollisionObject(IslandOriginX * TileSize + r_x * TileSize + (TileSize/4), IslandOriginY * TileSize + r_y * TileSize + (TileSize / 2), (TileSize/2), (TileSize/2), "island_tile_resource", IslandID));
+                }
+            }
         }
 
         private void SetTileTextures()
