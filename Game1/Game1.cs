@@ -235,17 +235,31 @@ namespace Game1
                 }
                 Sprites.Add(new Sprite(playerTexture, new Rectangle((int)playerPositionX, (int)playerPositionY, 40, 80), Color.White, player.getDrawFrame()));
 
-                Sprites.Sort((obj, obj2) => obj.destinationRectangle.Y.CompareTo((obj2.destinationRectangle.Y + obj2.destinationRectangle.Height))); //bugs out here for some reason, make sure all sprites have destination rect assigned
+                Sprites.Sort(
+                    delegate(Sprite obj, Sprite obj2){
+                        if(obj != null && obj2 != null)
+                        {
+                            return (obj.destinationRectangle.Y + obj.destinationRectangle.Height).CompareTo((obj2.destinationRectangle.Y + obj2.destinationRectangle.Height));
+                        }
+                        else
+                        {
+                            return 0;
+                        }
+                    }
+                );
 
                 foreach (Sprite sp in Sprites)
                 {
-                    if (sp.sourceRectangle != null)
+                    if (sp != null)
                     {
-                        spriteBatch.Draw(sp.texture, sp.destinationRectangle, sp.sourceRectangle, sp.color);
-                    }
-                    else
-                    {
-                        spriteBatch.Draw(sp.texture, sp.destinationRectangle, sp.color);
+                        if (sp.sourceRectangle != null)
+                        {
+                            spriteBatch.Draw(sp.texture, sp.destinationRectangle, sp.sourceRectangle, sp.color);
+                        }
+                        else
+                        {
+                            spriteBatch.Draw(sp.texture, sp.destinationRectangle, sp.color);
+                        }
                     }
                 }
 

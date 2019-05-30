@@ -94,12 +94,13 @@ namespace Game1
             int r_x = rng.Next(IslandSize);
             int r_y = rng.Next(IslandSize);
             int r_type = rng.Next(2); //types * 10; types = tree, iron_ore
-            if(tiles[r_x][r_y].type == "land")
+            //TODO: also check so that we dont spawn a resource on the character as they would get stuck otherwise
+            if(tiles[r_x][r_y].type == "land" && !IslandResources.Exists((res) => res.x == r_x && res.y == r_y))
             {
                 if(r_type == 0)
                 {
                     IslandResources.Add(new IslandResource(r_x, r_y, TileSize, TileSize, "iron_ore", cm.Load<Texture2D>("iron_ore")));
-                    CollisionManager.AddCollisionObject(new CollisionObject(IslandOriginX * TileSize + r_x * TileSize, IslandOriginY * TileSize + r_y * TileSize, TileSize, TileSize, "island_tile_resource", IslandID));
+                    CollisionManager.AddCollisionObject(new CollisionObject(IslandOriginX * TileSize + r_x * TileSize, IslandOriginY * TileSize + r_y * TileSize + (TileSize / 2), TileSize, (TileSize / 2), "island_tile_resource", IslandID));
                 }
                 else if(r_type == 1)
                 {
