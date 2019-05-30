@@ -96,15 +96,14 @@ namespace Game1
             // TODO: Unload any non ContentManager content here
         }
 
+
+
+        public double elapsedTime = 0;
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        /// 
-
-        public double elapsedTime = 0;
-
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -130,7 +129,7 @@ namespace Game1
                 Island main_island = islands[0];
                 if((gameTime.TotalGameTime.TotalSeconds - elapsedTime) > 2)
                 {
-                    main_island.GenerateNewResource(); //generate new resource every 30 seconds
+                    main_island.GenerateNewResource(); //generate new resource every 2 seconds
                     elapsedTime = gameTime.TotalGameTime.TotalSeconds;
                 }
                 var kstate = Keyboard.GetState();
