@@ -47,6 +47,8 @@
     <Compile Include="Game1.cs" />
     <Compile Include="Island.cs" />
     <Compile Include="IslandResource.cs" />
+    <Compile Include="InventoryItem.cs" />
+    <Compile Include="Inventory.cs" />
     <Compile Include="MapTile.cs" />
     <Compile Include="MapTileDetails.cs" />
     <Compile Include="Program.cs" />

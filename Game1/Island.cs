@@ -88,25 +88,31 @@ namespace Game1
             SetTileTextures();
         }
 
-        public void GenerateNewResource()
+        public void GenerateNewResource(int loop = 1)
         {
-            
-            int r_x = rng.Next(IslandSize);
-            int r_y = rng.Next(IslandSize);
-            int r_type = rng.Next(2); //types * 10; types = tree, iron_ore
-            //TODO: also check so that we dont spawn a resource on the character as they would get stuck otherwise
-            if(tiles[r_x][r_y].type == "land" && !IslandResources.Exists((res) => res.x == r_x && res.y == r_y))
+            int i = 0;
+            while(i < loop)
             {
-                if(r_type == 0)
+                int r_x = rng.Next(IslandSize);
+                int r_y = rng.Next(IslandSize);
+                int r_type = rng.Next(2); //types * 10; types = tree, iron_ore
+                                          //TODO: also check so that we dont spawn a resource on the character as they would get stuck otherwise
+                if (tiles[r_x][r_y].type == "land" && !IslandResources.Exists((res) => res.x == r_x && res.y == r_y))
                 {
-                    IslandResources.Add(new IslandResource(r_x, r_y, TileSize, TileSize, "iron_ore", cm.Load<Texture2D>("iron_ore")));
-                    CollisionManager.AddCollisionObject(new CollisionObject(IslandOriginX * TileSize + r_x * TileSize, IslandOriginY * TileSize + r_y * TileSize + (TileSize / 2), TileSize, (TileSize / 2), "island_tile_resource", IslandID));
+                    if (r_type == 0)
+                    {
+                        CollisionObject o = new CollisionObject(IslandOriginX * TileSize + r_x * TileSize, IslandOriginY * TileSize + r_y * TileSize + (TileSize / 2), TileSize, (TileSize / 2), "island_tile_resource", IslandID);
+                        IslandResources.Add(new IslandResource(r_x, r_y, TileSize, TileSize, "iron_ore", cm.Load<Texture2D>("iron_ore"), o));
+                        CollisionManager.AddCollisionObject(o);
+                    }
+                    else if (r_type == 1)
+                    {
+                        CollisionObject o = new CollisionObject(IslandOriginX * TileSize + r_x * TileSize + (TileSize / 4), IslandOriginY * TileSize + r_y * TileSize + (TileSize / 2), (TileSize / 2), (TileSize / 2), "island_tile_resource", IslandID);
+                        IslandResources.Add(new IslandResource(r_x, r_y, TileSize, TileSize * 2, "tree", cm.Load<Texture2D>("tree"), o));
+                        CollisionManager.AddCollisionObject(o);
+                    }
                 }
-                else if(r_type == 1)
-                {
-                    IslandResources.Add(new IslandResource(r_x, r_y, TileSize, TileSize*2, "tree", cm.Load<Texture2D>("tree")));
-                    CollisionManager.AddCollisionObject(new CollisionObject(IslandOriginX * TileSize + r_x * TileSize + (TileSize/4), IslandOriginY * TileSize + r_y * TileSize + (TileSize / 2), (TileSize/2), (TileSize/2), "island_tile_resource", IslandID));
-                }
+                i++;
             }
         }
 

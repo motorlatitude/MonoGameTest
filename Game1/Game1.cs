@@ -18,25 +18,38 @@ namespace Game1
 
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        SpriteFont defaultFont;
 
         float CameraOriginX = 600f;
         float CameraOriginY = 600f;
+
+        float fps = 0f;
+
+        Texture2D progressBarRedTexture;
+        Texture2D resourceHighlightTexture;
+        Texture2D MouseCursorTexture;
+        float MousePositionX = 0f;
+        float MousePositionY = 0f;
+
+        Inventory PlayerInventory;
 
         Character player;
         Texture2D playerTexture;
         float playerPositionX = 600f;
         float playerPositionY = 600f;
-        float playerSpeed = 80f;
+        float playerSpeed = 300f;
 
-        int tileSize = 82;
+        int tileSize = 80;
 
         bool drawCollisions = false;
+
+        bool isMouseDown = false;
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
-            graphics.PreferredBackBufferWidth = 1200;
-            graphics.PreferredBackBufferHeight = 1200;
+            graphics.PreferredBackBufferWidth = 1920;
+            graphics.PreferredBackBufferHeight = 1080;
             Content.RootDirectory = "Content";
 
             Window.AllowUserResizing = true;
@@ -72,6 +85,8 @@ namespace Game1
         {
             // TODO: Add your initialization logic here
             CollisionManager = new CollisionObjects();
+            PlayerInventory = new Inventory();
+            //this.IsMouseVisible = true;
             base.Initialize();
         }
 
@@ -84,7 +99,14 @@ namespace Game1
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            defaultFont = Content.Load<SpriteFont>("default");
+
             playerTexture = Content.Load<Texture2D>("player");
+            MouseCursorTexture = Content.Load<Texture2D>("cursor");
+
+            progressBarRedTexture = Content.Load<Texture2D>("progressBarRed");
+
+            resourceHighlightTexture = Content.Load<Texture2D>("res_highlight");
         }
 
         /// <summary>
@@ -98,7 +120,9 @@ namespace Game1
 
 
 
+        private KeyboardState previousKeyboardState;
         public double elapsedTime = 0;
+        public int resource_progress = 68;
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -109,22 +133,45 @@ namespace Game1
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            fps = (1 / (float)gameTime.ElapsedGameTime.TotalSeconds);
+
+            var mstate = Mouse.GetState();
+            MousePositionX = mstate.Position.X;
+            MousePositionY = mstate.Position.Y;
+            isMouseDown = false;
+            if (mstate.LeftButton == ButtonState.Pressed)
+            {
+                isMouseDown = true;
+                resource_progress -= 1;
+            }
+
             if (gameTime.ElapsedGameTime.TotalSeconds == 0)
             {
                 islands = new Island[2];
                 Island main_island = new Island(Content, CollisionManager);
-                main_island.GenerateIsland(13, 0, 0, tileSize, "main");
+                main_island.GenerateIsland(16, 0, 0, tileSize, "main");
                 main_island.GenerateNewResource();
                 main_island.GenerateNewResource();
                 islands[0] = main_island;
                 Island second_island = new Island(Content, CollisionManager);
-                second_island.GenerateIsland(13, 13, 0, tileSize, "right");
+                second_island.GenerateIsland(16, 16, 0, tileSize, "right");
                 islands[1] = second_island;
                 GeneratePlayer();
 
             }
             else
             {
+                frameElapsedTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                float frameUpdateTime = 1f / 8;
+                if (frameElapsedTime > frameUpdateTime)
+                {
+                    frameElapsedTime -= frameUpdateTime;
+
+                    if (frameIndex < 2)
+                        frameIndex++;
+                    else
+                        frameIndex = 0;
+                }
                 player.animationFrameUpdate(gameTime);
                 Island main_island = islands[0];
                 if((gameTime.TotalGameTime.TotalSeconds - elapsedTime) > 2)
@@ -132,14 +179,15 @@ namespace Game1
                     main_island.GenerateNewResource(); //generate new resource every 2 seconds
                     elapsedTime = gameTime.TotalGameTime.TotalSeconds;
                 }
+
                 var kstate = Keyboard.GetState();
-                if (kstate.IsKeyDown(Keys.F5))
+                if (kstate.IsKeyDown(Keys.F5) && !previousKeyboardState.IsKeyDown(Keys.F5))
                 {
                     CollisionManager.RemoveCollisionObjectsInGroup("main"); //make sure to generate new collision map for this island and get rid of the old one
-                    main_island.GenerateIsland(13, 0, 0, tileSize, "main");
+                    main_island.GenerateIsland(16, 0, 0, tileSize, "main");
                 }
 
-                if (kstate.IsKeyDown(Keys.F1))
+                if (kstate.IsKeyDown(Keys.F1) && !previousKeyboardState.IsKeyDown(Keys.F1))
                 {
                     drawCollisions = drawCollisions ? false : true;
                 }
@@ -181,22 +229,26 @@ namespace Game1
                     playerPositionY = org_playerPositionY;
                     CameraOriginY = org_CameraPositionY;
                 }
+                previousKeyboardState = kstate;
             }
 
 
             base.Update(gameTime);
         }
 
+        public double frameElapsedTime = 0;
+        public int frameIndex = 0;
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(new Color(46, 149, 255, 1));
 
             // TODO: Add your drawing code here
             List<Sprite> Sprites = new List<Sprite>();
+            Sprite ResourceHighlightSprite = null;
             Island main_island = islands[0];
             if (main_island.tiles.Length > 0)
             {
@@ -224,13 +276,41 @@ namespace Game1
                             spriteBatch.Draw(tile_details.texture, new Rectangle(tile_details.x * tileSize + island.IslandOriginX * tileSize, tile_details.y * tileSize + island.IslandOriginY * tileSize, tileSize, tileSize), Color.White);
                         }
                     }
+                    IslandResource removeResource = null;
                     foreach (IslandResource res in island.IslandResources)
                     {
                         if (res != null && res.texture != null)
                         {
-                            Sprites.Add(new Sprite(res.texture, new Rectangle(res.x * tileSize + island.IslandOriginX * tileSize, res.y * tileSize + island.IslandOriginY * tileSize + (tileSize - res.height), res.width, res.height), Color.White));
+                            Rectangle res_rectangle = new Rectangle(res.x * tileSize + island.IslandOriginX * tileSize, res.y * tileSize + island.IslandOriginY * tileSize + (tileSize - res.height), res.width, res.height);
+                            Rectangle mouse_res_rectangle = new Rectangle(res.x * tileSize + island.IslandOriginX * tileSize, res.y * tileSize + island.IslandOriginY * tileSize, tileSize, tileSize);
+                            Rectangle player_extended_rectangle = new Rectangle((int)playerPositionX - tileSize, (int)playerPositionY - tileSize, tileSize*3, tileSize*3);
+                            Sprites.Add(new Sprite(res.texture, res_rectangle, Color.White));
+                            Point mv = new Point(((int)MousePositionX - ((int)CameraOriginX - 600)), ((int)MousePositionY - ((int)CameraOriginY - 600)));
+                            if (mouse_res_rectangle.Contains(mv) && player_extended_rectangle.Contains(mouse_res_rectangle))
+                            {
+                                ResourceHighlightSprite = new Sprite(resourceHighlightTexture, new Rectangle(res.x * tileSize + island.IslandOriginX * tileSize, res.y * tileSize + island.IslandOriginY * tileSize, tileSize, tileSize), Color.White);
+                                if(resource_progress < 0)
+                                {
+                                    //explode and pick up items
+                                    resource_progress = tileSize - 12;
+                                    if(res.type == "iron_ore"){ 
+                                        PlayerInventory.AddItemToInventory(new InventoryItem("iron_ore"), 3);
+                                    }
+                                    else if(res.type == "tree"){
+                                       PlayerInventory.AddItemToInventory(new InventoryItem("wood"), 5);
+                                    }
+                                    CollisionManager.RemoveCollisionObject(res.collision_object);
+                                    removeResource = res;
+                                }
+                                else
+                                {
+                                    res.progress = resource_progress;
+                                }
+                            }
                         }
                     }
+                    if(removeResource != null)
+                        island.IslandResources.Remove(removeResource);
                 }
                 Sprites.Add(new Sprite(playerTexture, new Rectangle((int)playerPositionX, (int)playerPositionY, 40, 80), Color.White, player.getDrawFrame()));
 
@@ -262,6 +342,20 @@ namespace Game1
                     }
                 }
 
+                if (ResourceHighlightSprite != null)
+                {
+                    spriteBatch.Draw(ResourceHighlightSprite.texture, ResourceHighlightSprite.destinationRectangle, new Rectangle(frameIndex * 256, 0, 256, 256), ResourceHighlightSprite.color);
+                    if (isMouseDown)
+                    {
+                        Texture2D rect = new Texture2D(graphics.GraphicsDevice, 1, 1);
+                        Color[] data = new Color[1];
+                        data[0] = Color.Chocolate;
+                        rect.SetData(data);
+                        spriteBatch.Draw(rect, new Rectangle(ResourceHighlightSprite.destinationRectangle.X, ResourceHighlightSprite.destinationRectangle.Y + tileSize, tileSize, 26), Color.Black);
+                        spriteBatch.Draw(progressBarRedTexture, new Rectangle(ResourceHighlightSprite.destinationRectangle.X + 6, ResourceHighlightSprite.destinationRectangle.Y + tileSize + 6, resource_progress, 14), Color.White);
+                    }
+                }
+
                 //Draw collision areas
                 if (drawCollisions)
                 {
@@ -275,6 +369,18 @@ namespace Game1
                         spriteBatch.Draw(rect, new Rectangle((int)obj.x, (int)obj.y, obj.width, obj.height), Color.Red * 0.5f);
                     }
                 }
+                spriteBatch.End();
+
+                spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Matrix.CreateTranslation(0, 0, 0)); //move viewport / camera
+                spriteBatch.DrawString(defaultFont, Math.Round(fps, 1) + " FPS", new Vector2(0, 0), new Color(0, 255, 0, 1));
+                int k = 0;
+                if(PlayerInventory != null && PlayerInventory.Items != null){
+                    foreach(InventoryItem i in PlayerInventory.Items){
+                        spriteBatch.DrawString(defaultFont, i.amount + " " +i.name, new Vector2(0, 20 + k*20), new Color(0, 255, 0, 1));
+                        k++;
+                    }
+                }
+                spriteBatch.Draw(MouseCursorTexture, new Rectangle((int)MousePositionX, (int)MousePositionY, 20, 20), new Rectangle(0,0,64,64), Color.White);
 
                 spriteBatch.End();
             }

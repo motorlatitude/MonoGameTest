@@ -4,6 +4,8 @@
   <Platform>Windows</Platform>
   <Config />
   <SourceFiles>
+    <File>E:/Developer/Game/Game1/Game1/Content/cursor.png</File>
+    <File>E:/Developer/Game/Game1/Game1/Content/default.spritefont</File>
     <File>E:/Developer/Game/Game1/Game1/Content/iron_ore.png</File>
     <File>E:/Developer/Game/Game1/Game1/Content/land.png</File>
     <File>E:/Developer/Game/Game1/Game1/Content/land_border_bottom.png</File>
@@ -31,9 +33,15 @@
     <File>E:/Developer/Game/Game1/Game1/Content/ocean_border_right.png</File>
     <File>E:/Developer/Game/Game1/Game1/Content/ocean_border_right_left.png</File>
     <File>E:/Developer/Game/Game1/Game1/Content/player.png</File>
+    <File>E:/Developer/Game/Game1/Game1/Content/ProgressBarRed.png</File>
+    <File>E:/Developer/Game/Game1/Game1/Content/res_highlight.png</File>
     <File>E:/Developer/Game/Game1/Game1/Content/tree.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

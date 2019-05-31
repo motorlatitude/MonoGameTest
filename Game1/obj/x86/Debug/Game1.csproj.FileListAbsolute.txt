@@ -51,3 +51,7 @@ E:\Developer\Game\Game1\Game1\bin\Windows\x86\Debug\Content\land_dirt.xnb
 E:\Developer\Game\Game1\Game1\bin\Windows\x86\Debug\Content\player.xnb
 E:\Developer\Game\Game1\Game1\bin\Windows\x86\Debug\Content\iron_ore.xnb
 E:\Developer\Game\Game1\Game1\bin\Windows\x86\Debug\Content\tree.xnb
+E:\Developer\Game\Game1\Game1\bin\Windows\x86\Debug\Content\cursor.xnb
+E:\Developer\Game\Game1\Game1\bin\Windows\x86\Debug\Content\default.xnb
+E:\Developer\Game\Game1\Game1\bin\Windows\x86\Debug\Content\res_highlight.xnb
+E:\Developer\Game\Game1\Game1\bin\Windows\x86\Debug\Content\ProgressBarRed.xnb
