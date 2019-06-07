@@ -31,6 +31,11 @@ namespace Game1
             Objects.RemoveAll(obj => obj.group == group_name);
         }
 
+        public void RemoveCollisionObjectWithXAndY(int x, int y, string type)
+        {
+            Objects.RemoveAll(obj => obj.x == x && obj.y == y && obj.type == type);
+        }
+
         public bool CheckIfCollidingWithObject(int object_x, int object_y, int object_width, int object_height)
         {
             bool isColliding = false;

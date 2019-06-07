@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <SourceFile>E:/Developer/Game/Game1/Game1/Content/cursor.png</SourceFile>
-  <SourceTime>2019-05-30T18:53:48.5773096+01:00</SourceTime>
+  <SourceTime>2019-06-01T20:40:04.0517822+01:00</SourceTime>
   <DestFile>E:/Developer/Game/Game1/Game1/Content/bin/Windows/Content/cursor.xnb</DestFile>
-  <DestTime>2019-05-30T18:57:35.7632621+01:00</DestTime>
+  <DestTime>2019-06-01T20:40:19.103827+01:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2018-12-08T16:35:54+00:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

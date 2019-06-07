@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <SourceFile>E:/Developer/Game/Game1/Game1/Content/iron_ore.png</SourceFile>
-  <SourceTime>2019-05-30T12:35:25.7841396+01:00</SourceTime>
+  <SourceTime>2019-06-01T16:16:32.4293698+01:00</SourceTime>
   <DestFile>E:/Developer/Game/Game1/Game1/Content/bin/Windows/Content/iron_ore.xnb</DestFile>
-  <DestTime>2019-05-30T12:37:36.6662823+01:00</DestTime>
+  <DestTime>2019-06-01T16:16:38.7051876+01:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2018-12-08T16:35:54+00:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

@@ -22,6 +22,7 @@ namespace Game1
         public MapTileDetails[] TileDetails;
 
         public List<IslandResource> IslandResources;
+        public List<IslandBuilding> IslandBuildings;
 
         public Island(ContentManager mainContentManager, CollisionObjects mainCollisionManager)
         {
@@ -45,6 +46,7 @@ namespace Game1
             tiles = new MapTile[IslandSize][];
             TileDetails = new MapTileDetails[10];
             IslandResources = new List<IslandResource>();
+            IslandBuildings = new List<IslandBuilding>();
             rng = new Random();
             Random random = rng;
             int TileDetailsIndex = 0;
@@ -54,7 +56,7 @@ namespace Game1
                 for(int y = 0; y < IslandSize; y++)
                 {
                     int r = random.Next(100);
-                    if (y == 0 || x == 0 || y == IslandSize - 1 || x == IslandSize - 1 || r < 12)
+                    if (y == 0 || x == 0 || y == IslandSize - 1 || x == IslandSize - 1 || r < 8)
                     {
                         tiles[x][y] = new MapTile(x, y, "ocean"); //generate a border of ocean tiles around the island and a few ocean tiles spotted in the island
                         CollisionManager.AddCollisionObject(new CollisionObject(IslandOriginX * TileSize + x * TileSize, IslandOriginY * TileSize + y * TileSize, TileSize, TileSize, "island_tile", IslandID)); //make ocean tiles collideable (player can't move over those)
@@ -95,24 +97,56 @@ namespace Game1
             {
                 int r_x = rng.Next(IslandSize);
                 int r_y = rng.Next(IslandSize);
-                int r_type = rng.Next(2); //types * 10; types = tree, iron_ore
-                                          //TODO: also check so that we dont spawn a resource on the character as they would get stuck otherwise
+                int r_type = rng.Next(8); //types * 10; types = tree, iron_ore
+                //TODO: also check so that we dont spawn a resource on the character as they would get stuck otherwise
                 if (tiles[r_x][r_y].type == "land" && !IslandResources.Exists((res) => res.x == r_x && res.y == r_y))
                 {
                     if (r_type == 0)
                     {
                         CollisionObject o = new CollisionObject(IslandOriginX * TileSize + r_x * TileSize, IslandOriginY * TileSize + r_y * TileSize + (TileSize / 2), TileSize, (TileSize / 2), "island_tile_resource", IslandID);
-                        IslandResources.Add(new IslandResource(r_x, r_y, TileSize, TileSize, "iron_ore", cm.Load<Texture2D>("iron_ore"), o));
+                        IslandResources.Add(new IslandResource(r_x, r_y, TileSize-16, TileSize-16, "iron_ore", cm.Load<Texture2D>("iron_ore"), o));
                         CollisionManager.AddCollisionObject(o);
                     }
-                    else if (r_type == 1)
+                    else if (r_type >= 1 && r_type <= 4)
                     {
                         CollisionObject o = new CollisionObject(IslandOriginX * TileSize + r_x * TileSize + (TileSize / 4), IslandOriginY * TileSize + r_y * TileSize + (TileSize / 2), (TileSize / 2), (TileSize / 2), "island_tile_resource", IslandID);
                         IslandResources.Add(new IslandResource(r_x, r_y, TileSize, TileSize * 2, "tree", cm.Load<Texture2D>("tree"), o));
                         CollisionManager.AddCollisionObject(o);
                     }
+                    else if (r_type == 5)
+                    {
+                        CollisionObject o = new CollisionObject(IslandOriginX * TileSize + r_x * TileSize, IslandOriginY * TileSize + r_y * TileSize + (TileSize / 2), TileSize, (TileSize / 2), "island_tile_resource", IslandID);
+                        IslandResources.Add(new IslandResource(r_x, r_y, TileSize - 16, TileSize - 16, "coal_ore", cm.Load<Texture2D>("coal_ore"), o));
+                        CollisionManager.AddCollisionObject(o);
+                    }
+                    else if (r_type == 6)
+                    {
+                        CollisionObject o = new CollisionObject(IslandOriginX * TileSize + r_x * TileSize, IslandOriginY * TileSize + r_y * TileSize + (TileSize / 2), TileSize, (TileSize / 2), "island_tile_resource", IslandID);
+                        IslandResources.Add(new IslandResource(r_x, r_y, TileSize - 16, TileSize - 16, "rock", cm.Load<Texture2D>("rock"), o));
+                        CollisionManager.AddCollisionObject(o);
+                    }
+                    else if (r_type == 7)
+                    {
+                        CollisionObject o = new CollisionObject(IslandOriginX * TileSize + r_x * TileSize, IslandOriginY * TileSize + r_y * TileSize + (TileSize / 2), TileSize, (TileSize / 2), "island_tile_resource", IslandID);
+                        IslandResources.Add(new IslandResource(r_x, r_y, TileSize - 16, TileSize - 16, "berry_bush", cm.Load<Texture2D>("berry_bush"), o));
+                        CollisionManager.AddCollisionObject(o);
+                    }
                 }
                 i++;
+            }
+        }
+
+        public void AddBuilding(int x, int y, string type)
+        {
+            if(type == "bridge" && tiles[x][y].type == "ocean")
+            {
+                IslandBuildings.Add(new IslandBuilding(x, y, TileSize, TileSize, "bridge", cm.Load<Texture2D>("bridge")));
+                //remove collision object
+                CollisionManager.RemoveCollisionObjectWithXAndY(IslandOriginX * TileSize + x * TileSize, IslandOriginY * TileSize + y * TileSize, "island_tile");
+            }
+            else if (type == "fishing_net" && tiles[x][y].type == "ocean")
+            {
+                IslandBuildings.Add(new IslandBuilding(x, y, TileSize, TileSize, "fishing_net", cm.Load<Texture2D>("fishing_net")));
             }
         }
 
